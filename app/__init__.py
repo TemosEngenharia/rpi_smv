@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask
+from flask import render_template
 from flask_sqlalchemy import SQLAlchemy
 
 import jinja2
@@ -20,13 +21,9 @@ class MyApp(Flask):
 
 # Define the WSGI application object
 app = MyApp()
-
 app.config.from_object('config')
 db = SQLAlchemy(app)
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404.html'), 440
+db.create_all()
 
 # Import a module / component using its blueprint handler variable
 from app.mod_auth.controllers import mod_auth as auth_module
@@ -34,4 +31,6 @@ from app.mod_auth.controllers import mod_auth as auth_module
 # Register blueprints
 app.register_blueprint(auth_module)
 
-db.create_all()
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 440
